@@ -8,11 +8,6 @@ import { SignOutButton, SignedIn } from "@clerk/nextjs";
 export default async function Home() {
   const user = await currentUser();
   
-  console.log(user?.id ?? "No user");
-
-  // <SignOutButton/>
-  // return;
-
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);

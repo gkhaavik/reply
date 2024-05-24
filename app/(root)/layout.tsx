@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      signInForceRedirectUrl={'/onboarding'}
+      signInFallbackRedirectUrl={'/onboarding'}
       appearance={{
         baseTheme: dark,
       }}
