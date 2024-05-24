@@ -5,13 +5,21 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { SignOutButton, SignedIn } from "@clerk/nextjs";
 
+// TODO:
+// - Implement a search bar
+// - Implement a search bar for communities
+// - Implement infinite scrolling
+// - Implement likes
+// - Implement visible latest replies
+// - Implement post images
+
 export default async function Home() {
   const user = await currentUser();
   
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarding) redirect("/onboarding");
+  if (!userInfo?.onboarded) redirect("/onboarding");
   
   const result = await fetchPosts(1, 30);
 

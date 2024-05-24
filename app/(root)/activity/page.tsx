@@ -11,7 +11,7 @@ async function Page() {
 
   // fetch organization list created by user
   const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarding) redirect("/onboarding");
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
   const activity = await getActivity(userInfo._id);
 

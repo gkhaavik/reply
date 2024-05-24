@@ -19,6 +19,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { PostValidation } from "@/lib/validations/post";
 import { createPost } from "@/lib/actions/post.actions";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
     userId: string;
@@ -27,12 +28,13 @@ interface Props {
 function PostForms({ userId }: Props) {
     const router = useRouter();
     const pathname = usePathname();
+    const { organization } = useOrganization();
 
     const onSubmit = async (values: z.infer<typeof PostValidation>) => {
         await createPost({
             text: values.post,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname
         });
 

@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
             ref: "Post"
         }
     ],
-    onboarding: { type: Boolean, default: false },
+    onboarded: { type: Boolean, default: false },
     communities: [
         {
             type: mongoose.Schema.Types.ObjectId,
