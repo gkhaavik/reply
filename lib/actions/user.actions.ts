@@ -181,3 +181,28 @@ export async function getActivity(userId: string) {
         throw error;
     }
 }
+
+export async function hasLikedPost(userId: string, postId: string) {
+    try {
+        connectToDB();
+
+        console.log(`Checking if user ${userId} has liked post ${postId}`);
+
+        const user = await User.findOne({ id: userId })
+        .populate({
+            path: "liked",
+            model: Post,
+        });
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const likedPostIds = user.liked.map((post: any) => post.id);
+
+        return likedPostIds.includes(postId);
+    } catch (error) {
+        console.error("Error checking if user has liked post:", error);
+        throw error;
+    }
+}

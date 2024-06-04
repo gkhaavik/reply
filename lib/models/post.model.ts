@@ -26,7 +26,17 @@ const postSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Post",
         }
-    ]
+    ],
+    likesAmount: {
+        type: Number,
+        default: 0,
+    },
+    likedBy: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        }
+    ],
 });
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);

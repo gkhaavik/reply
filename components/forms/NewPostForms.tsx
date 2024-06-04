@@ -96,10 +96,9 @@ function NewPostForms({ userId, imgUrl }: Props) {
 
             <div className="flex gap-4 justify-around">
                 {/* create poll icon */}
-                <Button className="bg-primary-500">Create Poll</Button>
-                <Button className="bg-primary-500">Create Poll</Button>
-                <Button className="bg-primary-500">Create Poll</Button>
-                <Button className="bg-primary-500">Create Poll</Button>
+                <Button className="bg-primary-500">Poll</Button>
+                <Button className="bg-primary-500">Photo / Video</Button>
+                <Button className="bg-primary-500">Mood</Button>
             </div>
         </div>
 

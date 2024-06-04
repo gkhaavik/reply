@@ -1,21 +1,21 @@
 import { fetchPosts } from "@/lib/actions/post.actions";
 import { currentUser } from "@clerk/nextjs/server";
 import PostCard from "@/components/cards/PostCard";
-import { fetchUser } from "@/lib/actions/user.actions";
+import { fetchUser, hasLikedPost } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { SignOutButton, SignedIn, useOrganization } from "@clerk/nextjs";
 import PostForms from "@/components/forms/PostForms";
 import NewPostForms from "@/components/forms/NewPostForms";
 
 // TODO:
-// - Implement a search bar
-// - Implement a search bar for communities
-// - Implement suggested communities
-// - Implement suggested users
-// - Implement visible latest replies
-// - Implement likes
-// - Implement infinite scrolling
-// - Implement post images
+// - [] Implement a search bar
+// - [] Implement a search bar for communities
+// - [] Implement suggested communities
+// - [] Implement suggested users
+// - [] Implement visible latest replies
+// - [] Implement likes
+// - [] Implement infinite scrolling
+// - [] Implement post images
 
 export default async function Home() {
   const user = await currentUser();
@@ -26,6 +26,8 @@ export default async function Home() {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const result = await fetchPosts(1, 30);
+
+  console.log(`user id: ${userInfo._id} user name: ${user.id}`);
 
   return (
     <>
@@ -41,8 +43,10 @@ export default async function Home() {
           <p className="no-result">No posts found</p>
         ) : (
           <>
-            {result.posts.map((post) => (
-              <PostCard
+            {result.posts.map(async (post) => {
+              // const hasLiked = await hasLikedPost(userInfo.id, post._id);
+
+              return <PostCard
                 key={post._id}
                 id={post._id}
                 currentUserId={user?.id || ""}
@@ -52,8 +56,9 @@ export default async function Home() {
                 createdAt={post.createdAt}
                 comments={post.children}
                 community={post.community}
+                isLiked={true}
               />
-            ))}
+            })}
           </>
         )}
       </section>

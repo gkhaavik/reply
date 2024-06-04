@@ -238,3 +238,77 @@ export async function addCommentToPost(
         throw new Error("Unable to add comment");
     }
 }
+
+export async function likePost(postId: string, userId: string) {
+    connectToDB();
+
+    try {
+        // Find the post by its ID
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            throw new Error("Post not found");
+        }
+
+        // Check if the user has already liked the post
+        if (post.likedBy.includes(userId)) {
+            throw new Error("Post already liked");
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            $push: { liked: post._id },
+            $inc: { likesAmount: 1 },
+        });
+
+        // Add the user's ID to the post's likes array
+        post.likedBy.push(userId);
+
+        // increment the likesAmount by 1
+        post.likesAmount += 1;
+        
+        // Save the updated post to the database
+        await post.save();
+
+        console.log(`Post liked successfully by user: ${userId} on post: ${postId} likes: ${post.likesAmount}`);
+    } catch (err) {
+        console.error("Error while liking post:", err);
+        throw new Error("Unable to like post");
+    }
+}
+
+export async function unlikePost(postId: string, userId: string) {
+    connectToDB();
+
+    try {
+        // Find the post by its ID
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            throw new Error("Post not found");
+        }
+
+        // Check if the user has liked the post
+        if (!post.likedBy.includes(userId)) {
+            throw new Error("Post not liked");
+        }
+
+        await User.findByIdAndUpdate(userId, {
+            $pull: { liked: post._id },
+            $inc: { likesAmount: -1 },
+        });
+
+        // Remove the user's ID from the post's likes array
+        post.likedBy = post.likedBy.filter((id: string) => id.toString() !== userId);
+
+        // decrement the likesAmount by 1
+        post.likesAmount -= 1;
+
+        // Save the updated post to the database
+        await post.save();
+
+        console.log(`Post unliked successfully by user: ${userId} on post: ${postId} likes: ${post.likesAmount}`);
+    } catch (err) {
+        console.error("Error while unliking post:", err);
+        throw new Error("Unable to unlike post");
+    }
+}
