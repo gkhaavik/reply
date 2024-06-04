@@ -1,9 +1,6 @@
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { likePost } from "@/lib/actions/post.actions";
-import { hasLikedPost } from "@/lib/actions/user.actions";
 import LikeButton from "../LikeButton";
 
 interface Props {
@@ -29,7 +26,7 @@ interface Props {
         content: string;
     }[];
     isComment?: boolean;
-    isLiked: boolean;
+    isLiked?: boolean;
 }
 
 const PostCard = ({
@@ -42,13 +39,8 @@ const PostCard = ({
     comments,
     community,
     isComment,
-    isLiked
+    isLiked = false
 }: Props) => {
-    const likePostAction = async () => {
-        // await likePost(id, currentUserId);
-        console.log('like post');
-    }
-
     return (
         <article className={`flex w-full flex-col rounded-xl 
         ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
@@ -79,7 +71,7 @@ const PostCard = ({
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
                                 {/* Like Post */}
-                                <LikeButton isLiked={isLiked} postId={id} userId={currentUserId} />
+                                <LikeButton liked={isLiked} postId={id} userId={currentUserId} />
 
                                 {/* Reply */}
                                 <Link href={`/post/${id}`}>
@@ -114,22 +106,28 @@ const PostCard = ({
                 {/* TODO: Show recent comment logos */}
 
             </div>
-            {!isComment && community && (
-                <Link href={`/communities/${community.id}`} className="mt-5 flex items-center">
-                    <p className="text-subtle-medium text-gray-1">
-                        {formatDateString(createdAt)} - {community.name} Community
-                    </p>
 
-                    <Image
-                        src={community.image}
-                        alt={community.name}
-                        width={14}
-                        height={14}
-                        className="ml-1 rounded-full object-cover"
-                    />
-                </Link>
+            {!isComment && (
+                <div className="mt-5 flex text-subtle-medium text-gray-1">
+                    <p className="flex">{formatDateString(createdAt)}
+                        {community && (
+                            <span className="flex items-center">
+                                &nbsp;•&nbsp;{community.name} Community
+                                <Link href={`/communities/${community.id}`}>
+                                    <Image
+                                        src={community.image}
+                                        alt={community.name}
+                                        width={14}
+                                        height={14}
+                                        className="ml-1 rounded-full object-cover"
+                                    />
+                                </Link>
+                            </span>
+                        )}
+                    </p>
+                </div>
             )}
-        </article>
+        </article >
     )
 }
 

@@ -243,6 +243,8 @@ export async function likePost(postId: string, userId: string) {
     connectToDB();
 
     try {
+        console.log(`1. User ${userId} is liking post ${postId}`);
+
         // Find the post by its ID
         const post = await Post.findById(postId);
 
@@ -250,65 +252,76 @@ export async function likePost(postId: string, userId: string) {
             throw new Error("Post not found");
         }
 
-        // Check if the user has already liked the post
-        if (post.likedBy.includes(userId)) {
-            throw new Error("Post already liked");
+        console.log(`Found post: ${post}`);
+
+        const user = await User.findOne({ id: userId });
+
+        if (!user) {
+            throw new Error("User not found");
         }
 
-        await User.findByIdAndUpdate(userId, {
-            $push: { liked: post._id },
-            $inc: { likesAmount: 1 },
-        });
+        let liked = false;
 
-        // Add the user's ID to the post's likes array
-        post.likedBy.push(userId);
+        // TODO: Check if the user has already liked the post
+        if (post.likedBy.includes(user._id)) {
 
-        // increment the likesAmount by 1
-        post.likesAmount += 1;
-        
+            // Remove the user's ID from the post's likes array
+            post.likedBy = post.likedBy.filter((id: any) => id.toString() !== user._id.toString());
+
+            // decrement the likesAmount by 1
+            post.likesAmount -= 1;
+
+            // Update the user's liked posts
+            user.liked = user.liked.filter((id: any) => id.toString() !== post._id.toString());
+
+            liked = false;
+        } else {
+            // Add the user's ID to the post's likes array
+            post.likedBy.push(user._id);
+
+            // increment the likesAmount by 1
+            post.likesAmount += 1;
+
+            // Update the user's liked posts
+            user.liked.push(post._id);
+
+            liked = true;
+        }
+
+        console.log(`User ${userId} ${liked ? "liked" : "unliked"} post ${postId}`);
+
         // Save the updated post to the database
         await post.save();
+        await user.save();
 
-        console.log(`Post liked successfully by user: ${userId} on post: ${postId} likes: ${post.likesAmount}`);
+        return liked;
     } catch (err) {
         console.error("Error while liking post:", err);
         throw new Error("Unable to like post");
     }
 }
 
-export async function unlikePost(postId: string, userId: string) {
+export async function hasLikedPost(userId: string, postId: string) {
     connectToDB();
 
     try {
-        // Find the post by its ID
-        const post = await Post.findById(postId);
+        const user = await User.findOne({ id: userId })
+            .populate({
+                path: "liked",
+                model: Post,
+            });
 
-        if (!post) {
-            throw new Error("Post not found");
+        if (!user) {
+            throw new Error("User not found");
         }
 
-        // Check if the user has liked the post
-        if (!post.likedBy.includes(userId)) {
-            throw new Error("Post not liked");
-        }
+        const liked = user.liked.includes(postId);
+        console.log(`User ${userId} has ${liked ? "" : "not"} liked post ${postId}`);
 
-        await User.findByIdAndUpdate(userId, {
-            $pull: { liked: post._id },
-            $inc: { likesAmount: -1 },
-        });
-
-        // Remove the user's ID from the post's likes array
-        post.likedBy = post.likedBy.filter((id: string) => id.toString() !== userId);
-
-        // decrement the likesAmount by 1
-        post.likesAmount -= 1;
-
-        // Save the updated post to the database
-        await post.save();
-
-        console.log(`Post unliked successfully by user: ${userId} on post: ${postId} likes: ${post.likesAmount}`);
-    } catch (err) {
-        console.error("Error while unliking post:", err);
-        throw new Error("Unable to unlike post");
+        return liked;
+    }
+    catch (error) {
+        console.error("Error checking if user has liked post:", error);
+        throw error;
     }
 }

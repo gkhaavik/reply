@@ -1,10 +1,8 @@
-import { fetchPosts } from "@/lib/actions/post.actions";
+import { fetchPosts, hasLikedPost } from "@/lib/actions/post.actions";
 import { currentUser } from "@clerk/nextjs/server";
 import PostCard from "@/components/cards/PostCard";
-import { fetchUser, hasLikedPost } from "@/lib/actions/user.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
-import { SignOutButton, SignedIn, useOrganization } from "@clerk/nextjs";
-import PostForms from "@/components/forms/PostForms";
 import NewPostForms from "@/components/forms/NewPostForms";
 
 // TODO:
@@ -27,7 +25,7 @@ export default async function Home() {
 
   const result = await fetchPosts(1, 30);
 
-  console.log(`user id: ${userInfo._id} user name: ${user.id}`);
+  console.log(`user id: ${userInfo._id} currentuser: ${user.id}`);
 
   return (
     <>
@@ -35,7 +33,7 @@ export default async function Home() {
 
       <section>
         {/* create post*/}
-        <NewPostForms userId={userInfo._id} imgUrl={userInfo.image} />
+        <NewPostForms currentUserId={user.id} userId={userInfo._id} imgUrl={userInfo.image} />
       </section>
 
       <section className="mt-9 flex flex-col gap-10">
@@ -44,20 +42,22 @@ export default async function Home() {
         ) : (
           <>
             {result.posts.map(async (post) => {
-              // const hasLiked = await hasLikedPost(userInfo.id, post._id);
+              const isLiked = await hasLikedPost(user.id, post._id);
 
-              return <PostCard
-                key={post._id}
-                id={post._id}
-                currentUserId={user?.id || ""}
-                parentId={post.parentId}
-                content={post.text}
-                author={post.author}
-                createdAt={post.createdAt}
-                comments={post.children}
-                community={post.community}
-                isLiked={true}
-              />
+              return (
+                <PostCard
+                  key={post._id}
+                  id={post._id}
+                  currentUserId={user?.id || ""}
+                  parentId={post.parentId}
+                  content={post.text}
+                  author={post.author}
+                  createdAt={post.createdAt}
+                  comments={post.children}
+                  community={post.community}
+                  isLiked={isLiked}
+                />
+              )
             })}
           </>
         )}

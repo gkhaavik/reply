@@ -22,13 +22,15 @@ import { createPost } from "@/lib/actions/post.actions";
 import { useOrganization } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 interface Props {
     userId: string;
+    currentUserId: string;
     imgUrl: string;
 }
 
-function NewPostForms({ userId, imgUrl }: Props) {
+function NewPostForms({ userId, currentUserId, imgUrl }: Props) {
     const router = useRouter();
     const pathname = usePathname();
     const { organization } = useOrganization();
@@ -57,7 +59,7 @@ function NewPostForms({ userId, imgUrl }: Props) {
     return (
         <div className="flex w-full flex-col rounded-xl bg-dark-2 p-7">
             <div className="flex gap-10">
-                <Link href={`/profile/${userId}`}
+                <Link href={`/profile/${currentUserId}`}
                     className="relative h-11 w-11">
                     <Image
                         src={imgUrl}
