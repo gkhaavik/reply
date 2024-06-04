@@ -3,29 +3,38 @@ import { currentUser } from "@clerk/nextjs/server";
 import PostCard from "@/components/cards/PostCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
-import { SignOutButton, SignedIn } from "@clerk/nextjs";
+import { SignOutButton, SignedIn, useOrganization } from "@clerk/nextjs";
+import PostForms from "@/components/forms/PostForms";
+import NewPostForms from "@/components/forms/NewPostForms";
 
 // TODO:
 // - Implement a search bar
 // - Implement a search bar for communities
-// - Implement infinite scrolling
-// - Implement likes
+// - Implement suggested communities
+// - Implement suggested users
 // - Implement visible latest replies
+// - Implement likes
+// - Implement infinite scrolling
 // - Implement post images
 
 export default async function Home() {
   const user = await currentUser();
-  
+
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
-  
+
   const result = await fetchPosts(1, 30);
 
   return (
     <>
       <h1 className="head-text text-left">Home</h1>
+
+      <section>
+        {/* create post*/}
+        <NewPostForms userId={userInfo._id} imgUrl={userInfo.image} />
+      </section>
 
       <section className="mt-9 flex flex-col gap-10">
         {result.posts.length === 0 ? (
