@@ -38,14 +38,19 @@ function NewPostForms({ userId, currentUserId, imgUrl }: Props) {
     imgUrl = organization ? organization.imageUrl : imgUrl;
 
     const onSubmit = async (values: z.infer<typeof PostValidation>) => {
+        // make sure the user cant spam the post button
+        if (!values.post) return;
+
+        // clear the form
+        form.reset();
+
+        // create the post
         await createPost({
             text: values.post,
             author: userId,
             communityId: organization ? organization.id : null,
             path: pathname
         });
-
-        router.push("/");
     }
 
     const form = useForm({
