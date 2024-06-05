@@ -243,16 +243,12 @@ export async function likePost(postId: string, userId: string) {
     connectToDB();
 
     try {
-        console.log(`1. User ${userId} is liking post ${postId}`);
-
         // Find the post by its ID
         const post = await Post.findById(postId);
 
         if (!post) {
             throw new Error("Post not found");
         }
-
-        console.log(`Found post: ${post}`);
 
         const user = await User.findOne({ id: userId });
 
@@ -262,7 +258,6 @@ export async function likePost(postId: string, userId: string) {
 
         let liked = false;
 
-        // TODO: Check if the user has already liked the post
         if (post.likedBy.includes(user._id)) {
 
             // Remove the user's ID from the post's likes array
@@ -287,8 +282,6 @@ export async function likePost(postId: string, userId: string) {
 
             liked = true;
         }
-
-        console.log(`User ${userId} ${liked ? "liked" : "unliked"} post ${postId}`);
 
         // Save the updated post to the database
         await post.save();
@@ -315,10 +308,9 @@ export async function hasLikedPost(userId: string, postId: string) {
             throw new Error("User not found");
         }
 
-        const liked = user.liked.includes(postId);
-        console.log(`User ${userId} has ${liked ? "" : "not"} liked post ${postId}`);
+        const post = await Post.findById(postId);
 
-        return liked;
+        return user.liked.some((likedPost: any) => likedPost._id.toString() === post._id.toString());
     }
     catch (error) {
         console.error("Error checking if user has liked post:", error);

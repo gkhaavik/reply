@@ -5,26 +5,25 @@ import React from 'react'
 import { likePost } from '@/lib/actions/post.actions';
 
 type Props = {
-    postId: string,
-    userId: string,
-    liked: boolean
+    liked: boolean,
+    postId: string
+    currentUserId: string
 }
 
 export default function LikeButton({
+    liked,
     postId,
-    userId,
-    liked
+    currentUserId
 }: Props) {
     const [isLiked, setIsLiked] = React.useState(liked);
-
-    const handleLike = async () => {
-        const result = await likePost(postId, userId);
-        setIsLiked(result);
-        console.log(`like result: ${result}`);
-    }
     
+    const onPress = async () => {
+        const likeState = await likePost(postId, currentUserId);
+        setIsLiked(likeState);
+    }
+
     return (
-        <div onClick={handleLike} className='hover:bg-black'>
+        <div onClick={onPress} className='hover:bg-black'>
             <Image src={`${isLiked ? "/assets/heart-filled.svg" : "/assets/heart-gray.svg"}`}
                 alt="heart" width={24} height={24}
                 className="cursor-pointer object-contain" />

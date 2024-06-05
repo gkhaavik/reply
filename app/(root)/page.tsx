@@ -25,8 +25,6 @@ export default async function Home() {
 
   const result = await fetchPosts(1, 30);
 
-  console.log(`user id: ${userInfo._id} currentuser: ${user.id}`);
-
   return (
     <>
       <h1 className="head-text text-left">Home</h1>
@@ -41,24 +39,18 @@ export default async function Home() {
           <p className="no-result">No posts found</p>
         ) : (
           <>
-            {result.posts.map(async (post) => {
-              const isLiked = await hasLikedPost(user.id, post._id);
-
-              return (
-                <PostCard
-                  key={post._id}
-                  id={post._id}
-                  currentUserId={user?.id || ""}
-                  parentId={post.parentId}
-                  content={post.text}
-                  author={post.author}
-                  createdAt={post.createdAt}
-                  comments={post.children}
-                  community={post.community}
-                  isLiked={isLiked}
-                />
-              )
-            })}
+            {result.posts.map((post) => <PostCard
+              key={post._id}
+              id={post._id}
+              currentUserId={user?.id || ""}
+              parentId={post.parentId}
+              content={post.text}
+              author={post.author}
+              createdAt={post.createdAt}
+              comments={post.children}
+              community={post.community}
+            />
+            )}
           </>
         )}
       </section>
