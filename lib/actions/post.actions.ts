@@ -20,6 +20,11 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
         .skip(skipAmount)
         .limit(pageSize)
         .populate({
+            path: "likedBy",
+            model: User,
+            select: "_id",
+        })
+        .populate({
             path: "author",
             model: User,
         })
@@ -163,6 +168,11 @@ export async function fetchPostById(postId: string) {
     try {
         const post = await Post.findById(postId)
             .populate({
+                path: "likedBy",
+                model: User,
+                select: "_id",
+            })
+            .populate({
                 path: "author",
                 model: User,
                 select: "_id id name image",
@@ -189,6 +199,11 @@ export async function fetchPostById(postId: string) {
                             select: "_id id name parentId image", // Select only _id and username fields of the author
                         },
                     },
+                    {
+                        path: "likedBy",
+                        model: User,
+                        select: "_id",
+                    }
                 ],
             })
             .exec();
@@ -294,26 +309,26 @@ export async function likePost(postId: string, userId: string) {
     }
 }
 
-export async function hasLikedPost(userId: string, postId: string) {
-    connectToDB();
+// export async function hasLikedPost(userId: string, postId: string) {
+//     connectToDB();
 
-    try {
-        const user = await User.findOne({ id: userId })
-            .populate({
-                path: "liked",
-                model: Post,
-            });
+//     try {
+//         const user = await User.findOne({ id: userId })
+//             .populate({
+//                 path: "liked",
+//                 model: Post,
+//             });
 
-        if (!user) {
-            throw new Error("User not found");
-        }
+//         if (!user) {
+//             throw new Error("User not found");
+//         }
 
-        const post = await Post.findById(postId);
+//         const post = await Post.findById(postId);
 
-        return user.liked.some((likedPost: any) => likedPost._id.toString() === post._id.toString());
-    }
-    catch (error) {
-        console.error("Error checking if user has liked post:", error);
-        throw error;
-    }
-}
+//         return user.liked.some((likedPost: any) => likedPost._id.toString() === post._id.toString());
+//     }
+//     catch (error) {
+//         console.error("Error checking if user has liked post:", error);
+//         throw error;
+//     }
+// }

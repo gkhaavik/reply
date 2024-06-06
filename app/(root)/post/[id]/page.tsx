@@ -29,6 +29,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
                     createdAt={post.createdAt}
                     comments={post.children}
                     community={post.community}
+                    isLiked={post.likedBy.some((liker: any) => liker._id.toString() === userInfo._id.toString())}
                 />
             </div>
 
@@ -53,6 +54,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
                         comments={comment.children}
                         community={comment.community}
                         isComment
+                        isLiked={comment.likedBy.some((liker: any) => liker._id.toString() === userInfo._id.toString())}
                     />
                 ))}
 

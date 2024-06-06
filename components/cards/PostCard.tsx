@@ -4,7 +4,6 @@ import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import LikeButton from "../LikeButton";
-import { hasLikedPost } from "@/lib/actions/post.actions";
 
 interface Props {
     id: string;
@@ -29,7 +28,7 @@ interface Props {
         content: string;
     }[];
     isComment?: boolean;
-    // isLiked: boolean;
+    isLiked: boolean;
 }
 
 const PostCard = async ({
@@ -42,8 +41,9 @@ const PostCard = async ({
     comments,
     community,
     isComment,
+    isLiked
 }: Props) => {
-    const isLiked2 = await hasLikedPost(currentUserId, id);
+    // const isLiked = await hasLikedPost(currentUserId, id);
 
     return (
         <article className={`flex w-full flex-col rounded-xl 
@@ -75,7 +75,7 @@ const PostCard = async ({
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
                                 {/* Like Post */}
-                                <LikeButton liked={isLiked2} postId={id} currentUserId={currentUserId} />
+                                <LikeButton liked={isLiked} postId={JSON.stringify(id)} currentUserId={currentUserId} />
 
                                 {/* Reply */}
                                 <Link href={`/post/${id}`}>

@@ -47,7 +47,7 @@ function NewPostForms({ userId, currentUserId, imgUrl }: Props) {
         // create the post
         await createPost({
             text: values.post,
-            author: userId,
+            author: JSON.parse(userId),
             communityId: organization ? organization.id : null,
             path: pathname
         });

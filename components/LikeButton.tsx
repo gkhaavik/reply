@@ -18,7 +18,7 @@ export default function LikeButton({
     const [isLiked, setIsLiked] = React.useState(liked);
     
     const onPress = async () => {
-        const likeState = await likePost(postId, currentUserId);
+        const likeState = await likePost(JSON.parse(postId), currentUserId);
         setIsLiked(likeState);
     }
 
