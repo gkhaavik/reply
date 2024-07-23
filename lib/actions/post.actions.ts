@@ -308,27 +308,3 @@ export async function likePost(postId: string, userId: string) {
         throw new Error("Unable to like post");
     }
 }
-
-// export async function hasLikedPost(userId: string, postId: string) {
-//     connectToDB();
-
-//     try {
-//         const user = await User.findOne({ id: userId })
-//             .populate({
-//                 path: "liked",
-//                 model: Post,
-//             });
-
-//         if (!user) {
-//             throw new Error("User not found");
-//         }
-
-//         const post = await Post.findById(postId);
-
-//         return user.liked.some((likedPost: any) => likedPost._id.toString() === post._id.toString());
-//     }
-//     catch (error) {
-//         console.error("Error checking if user has liked post:", error);
-//         throw error;
-//     }
-// }

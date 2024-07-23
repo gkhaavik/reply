@@ -17,7 +17,7 @@ async function Page({ params }: { params: { id: string } }) {
     const userInfo = await fetchUser(params.id);
     if (!userInfo?.onboarded) redirect("/onboarding");
 
-    console.log("posts:" + userInfo.posts.length);
+    console.log(`1. account id: ${userInfo._id} current user id: ${user.id}`);
 
     return (
         <section>
@@ -58,7 +58,7 @@ async function Page({ params }: { params: { id: string } }) {
                         <TabsContent key={`content-${tab.label}`} value={tab.value}>
                             <PostsTab
                                 currentUserId={user.id}
-                                accountId={userInfo.id}
+                                accountId={userInfo._id}
                                 accountType="User"
                             />
                         </TabsContent>

@@ -30,7 +30,7 @@ export default async function Home() {
     <>
       <h1 className="head-text text-left">Home</h1>
 
-      <section>
+      <section className="mt-9 flex flex-col">
         {/* create post*/}
         <NewPostForms currentUserId={user.id} userId={JSON.stringify(userInfo._id)} imgUrl={userInfo.image} />
       </section>

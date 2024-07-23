@@ -72,6 +72,11 @@ export async function fetchUserPosts(userId: string) {
             model: Post,
             populate: [
                 {
+                    path: "likedBy",
+                    model: User,
+                    select: "_id id",
+                },
+                {
                     path: "community",
                     model: Community,
                     select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model

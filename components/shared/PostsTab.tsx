@@ -17,13 +17,15 @@ const PostsTab = async ({
     // Fetch profile posts
     let result: any;
 
-    if(accountType === 'User') {
-        result = await fetchUserPosts(accountId);
-    } else {    
-        result = await fetchCommunityPosts(accountId);
+    if (accountType === 'User') {
+        result = await fetchUserPosts(currentUserId);
+    } else {
+        result = await fetchCommunityPosts(currentUserId);
     }
 
     if (!result) redirect('/');
+
+    console.log(`2. account id: ${accountId} current user id: ${currentUserId} account type: ${accountType}`);
 
     return (
         <section className="mt-9 flex flex-col gap-10">
@@ -41,7 +43,7 @@ const PostsTab = async ({
                     createdAt={post.createdAt}
                     comments={post.children}
                     community={post.community}
-
+                    isLiked={post.likedBy.some((liker: any) => liker._id.toString() === accountId)}
                 />
             ))}
         </section>

@@ -76,7 +76,7 @@ function NewPostForms({ userId, currentUserId, imgUrl }: Props) {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex justify-start gap-10 w-full"
+                        className="flex justify-start gap-10 w-full items-center"
                     >
                         <FormField
                             control={form.control}
